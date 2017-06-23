@@ -2,16 +2,49 @@
 
 import sys
 
-def filsdeputs(o):
-    print o
+def checkstring(r):
+    i = 0
+    u = 0
+    check = 0
+    while (i < len(r)):
+        if (r[i] == "="):
+            break
+        if (r[i] == "("):
+            check += 1
+            u = 1
+            while (r[i + u] == " "):
+                u += 1
+            if (r[i + u] == ")" or r[i + u] == "+" or r[i + u] == "^" or r[i + u] == "|"):
+                print "Parentheses error\n"
+                sys.exit()
+        if (r[i] == ")"):
+            check -= 1
+            u = -1
+            while (r[i + u] == " "):
+                u -= 1
+            if (r[i + u] == "(" or r[i + u] == "+" or r[i + u] == "^" or r[i + u] == "|"):
+                print "Parentheses error\n"
+                sys.exit()
+        if (check < 0):
+            print "Parentheses error\n"
+            sys.exit()
+        i += 1
+    if (check != 0):
+        print "Parentheses error\n"
+        sys.exit()
+
+
 
 def checkfile(rules, facts, queries):
-    if (facts[0] != '=' and queries[0] != '?'):
-        print "error\n"
+    if (facts[0] != '=' or queries[0] != '?' or facts[1:].isalpha() != True or facts[1:].isupper() != True or queries[1:].isalpha() != True or queries[1:].isupper() != True):
+        print "error queries or fact\n"
         sys.exit()
     for r in rules:
         while (r.find("  ") != -1):
             r = r.replace("  ", " ")
+            checkstring(r)
+        r = r.replace("(", "")
+        r = r.replace(")", "")
         tab = r.split(" ")
         print tab, "hey"
         i = 0
@@ -86,7 +119,7 @@ if __name__ == "__main__":
     facts = rules[-2]
     del rules[-1]
     del rules[-1]
-    filsdeputs(rules)
-    filsdeputs(facts)
-    filsdeputs(queries)
+    print (rules)
+    print (facts)
+    print (queries)
     checkfile(rules, facts, queries)
