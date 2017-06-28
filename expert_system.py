@@ -116,7 +116,7 @@ def makegraph(rules):
     for a in alph:
         graph[a] = []
     for r in rules:
-        while (r.find("  ") != -1):
+        while (r.find(" ") != -1):
             r = r.replace(" ", "")
         tmp = r.split("=>")
         print r
@@ -146,9 +146,15 @@ def makegraph(rules):
         tmp = []
         tmp2 = []
     #print(graph)
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(graph)
+    return graph
 
+def start_algo(graph):
+    ans = {}
+    alph = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    for a in alph:
+        ans[a] = [False]
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(ans)
 
 if __name__ == "__main__":
     with open(sys.argv[1]) as f:
@@ -168,4 +174,7 @@ if __name__ == "__main__":
     print (facts)
     print (queries)
     checkfile(rules, facts, queries)
-    makegraph(rules)
+    graph = makegraph(rules)
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(graph)
+    start_algo(graph)

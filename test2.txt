@@ -8,6 +8,7 @@ A | B       => C        # A or B implies C
 A + !B      => F        # A and not B implies F
 C | !G      => H        # C or not G implies H
 V ^ W       => X        # V xor W implies X
+G + V       => X  
 A + B       => Y + Z    # A and B implies Y and Z
 E + F       => !V       # E and F implies not V
 
