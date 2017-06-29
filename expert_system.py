@@ -146,15 +146,44 @@ def makegraph(rules):
         tmp = []
         tmp2 = []
     #print(graph)
+    for a in alph:
+        for g in graph[a]:
+            str1 = g.split("=>")[0]
+            for s in str1:
+                if (a == s):
+                    print "error value implies the same value\n"
+                    sys.exit()
     return graph
 
-def start_algo(graph):
+def do_algo(querie, graph, ans):
+    if (ans[querie][1] == False)
+        for g in graph[querie]:
+            for t in g:
+                if (t.isaplha() == True):
+                    if (ans[t][1] == False):
+                        ans = do_algo(t, graph, ans)
+            #maintenant faire la resulotution avec eval, if ya deja true a ans[querie][1] regarder si la reponse resortante est pareille sinon erreure !
+
+
+def start_algo(graph, facts, queries):
     ans = {}
+    #querieans = []
     alph = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
     for a in alph:
-        ans[a] = [False]
+        ans[a] = [False, False]
+    facts = facts.replace("=" , "")
+    queries = queries.replace("?", "")
+    for f in facts:
+        ans[f] = [True, False]
+    for a in alph:
+        if (graph[a] == []):
+            ans[a][1] = True
+    for querie in queries:
+        ans = do_algo(queries, graph, ans)
+        #querieans.append(do_algo(querie, graph, ans))
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(ans)
+    print querieans
 
 if __name__ == "__main__":
     with open(sys.argv[1]) as f:
@@ -177,4 +206,4 @@ if __name__ == "__main__":
     graph = makegraph(rules)
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(graph)
-    start_algo(graph)
+    start_algo(graph, facts, queries)
