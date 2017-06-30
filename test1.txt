@@ -1,8 +1,8 @@
 
 
-(A + B) | (C + D) => E
+(A + B) | (C + D) => E + G
 
 =ACB
 
 
-?E
+?EG
