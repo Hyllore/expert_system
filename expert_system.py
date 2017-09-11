@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys
+import os
 
 def checkstring(r):
     i = 0
@@ -35,10 +36,9 @@ def checkstring(r):
 
 
 def checkfile(rules, facts, queries):
-    if (facts[0] != '=' or queries[0] != '?' or facts[1:].isalpha() != True or facts[1:].isupper() != True or queries[1:].isalpha() != True or queries[1:].isupper() != True):
-        if len(queries) <= 1:
-            print "error queries or fact"
-            sys.exit()
+    if (facts[0] != '=' or queries[0] != '?' or (len(facts) > 1 and (facts[1:].isalpha() != True or facts[1:].isupper() != True)) or queries[1:].isalpha() != True or queries[1:].isupper() != True or len(queries) <= 1):
+        print "error queries or fact"
+        sys.exit()
     for r in rules:
         while (r.find("  ") != -1):
             r = r.replace("  ", " ")
@@ -50,10 +50,10 @@ def checkfile(rules, facts, queries):
         while (i < len(tab) and tab[i] != "=>"):
             if (i < len(tab) and tab[i][0] == '!'):
                 if (len(tab[i]) != 2 or tab[i][1].isalpha() == False or tab[i][1].isupper() == False):
-                    print "error maj or letter"
-                    sys.exit()
-            elif (i < len(tab) and tab[i].isalpha() == False or tab[i].isupper() == False):
-                print "error maj or letter"
+                    print "error maj or letter hey"
+                    sys.exit() 
+            elif (i < len(tab) and len(tab[i]) != 1 or tab[i].isalpha() == False or tab[i].isupper() == False):
+                print "error maj or letter hoy"
                 sys.exit()
             i += 1
             if (i < len(tab) and tab[i] == "=>"):
@@ -75,7 +75,7 @@ def checkfile(rules, facts, queries):
                     if (len(tab[i]) != 2 or tab[i][1].isalpha() == False or tab[i][1].isupper() == False):
                         print "error maj or letter after '=>'"
                         sys.exit()
-                elif (tab[i].isalpha() == False or tab[i].isupper() == False):
+                elif (len(tab[i]) != 1 or tab[i].isalpha() == False or tab[i].isupper() == False):
                     print "error maj or letter after '=>'"
                     sys.exit()
                 i += 1
@@ -105,7 +105,7 @@ def makegraph(rules):
     tmp2 = []
     graph = {}
     i = 0
-    alph = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     for a in alph:
         graph[a] = []
     for r in rules:
@@ -122,8 +122,6 @@ def makegraph(rules):
             if (tmp2[1][0] == "!"):
                 tmp2[1] = tmp2[1].replace("!", "")
                 r2 = "!(" + tmp[0] + ")" + "=>" + tmp[1]
-            print r1
-            print r2
             graph[tmp2[0]].append(r1)
             graph[tmp2[1]].append(r2)
         else:
@@ -143,19 +141,21 @@ def makegraph(rules):
                     sys.exit()
     return graph
 
-#penser a gerer le cas ou c'est un not en resultant
-
-def do_algo(querie, graph, ans):
-    alph = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+def do_algo(querie, graph, ans, pastletter):
+    alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     if len(graph[querie]) == 0:
         return ans
     for g in graph[querie]:
         tmp = g.split("=>")[0]
         for t in tmp:
-            if (t.isalpha() == True):
-                if (ans[t][1] == False):
-                    ans = do_algo(t, graph, ans)
-        #maintenant faire la resulotution avec eval, if ya deja true a ans[querie][1] regarder si la reponse resortante est pareille sinon erreure !
+            if t.isalpha() == True and ans[t][1] == False:
+                for p in pastletter:
+                    if p == querie:
+                        print "error infinite loop"
+                        sys.exit()
+                pastletter.append(querie)
+                ans = do_algo(t, graph, ans, pastletter)
+                del pastletter[-1]
         for a in alph:
             if (ans[a][0] == True):
                 tmp = tmp.replace(a, "1")
@@ -175,14 +175,12 @@ def do_algo(querie, graph, ans):
                 ans[querie][0] = False
             ans[querie][1] = True
         elif (ans[querie][1] == True and eval(tmp) != ans[querie][0]):
-            print "error rules giving oposite answers"
-            sys.exit()
+           ans[querie][0] = True 
     return ans
 
 def start_algo(graph, facts, queries):
     ans = {}
-    #querieans = []
-    alph = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     for a in alph:
         ans[a] = [False, False]
     facts = facts.replace("=" , "")
@@ -193,20 +191,27 @@ def start_algo(graph, facts, queries):
         if (len(graph[a]) == 0):
             ans[str(a)][1] = True
     for querie in queries:
-        ans = do_algo(querie, graph, ans)
+        ans = do_algo(querie, graph, ans, [])
     for querie in queries:
         print querie, "is", ans[querie][0]
-        #querieans.append(do_algo(querie, graph, ans))
-
-
-#proteger le open !
 
 if __name__ == "__main__":
-    if (len(sys.argv) != 2):
+    i = 0
+    if len(sys.argv) != 2:
         print "error parameters"
         sys.exit()
+    if os.path.isfile(sys.argv[1]) == False:
+        print "Error open"
+        sys.exit()
+
+    content = []
     with open(sys.argv[1]) as f:
-        content = f.readlines()
+        for line in f:
+            content.append(line)
+            i += 1
+    if i <= 1:
+        print "Error"
+        sys.exit()
     rules = []
     for s in content:
         s = s.split("#", 1)[0]
