@@ -1,9 +1,0 @@
-!A           |         !B       |    S   =>    !A
-A   +  B + (!(B + (C) | A) + D)         => C + W
-A   +  B + (!(B + (C) | A) + D)         => A
-A   +  B + (!(B + (C) | A) + E)         => C
-
-
-=AGLFTD
-
-?CDFRES

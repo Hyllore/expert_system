@@ -15,7 +15,7 @@ def checkstring(r):
             while (r[i + u] == " "):
                 u += 1
             if (r[i + u] == ")" or r[i + u] == "+" or r[i + u] == "^" or r[i + u] == "|"):
-                print "Parentheses error"
+                print "Parentheses error."
                 sys.exit()
         if (r[i] == ")"):
             check -= 1
@@ -23,21 +23,21 @@ def checkstring(r):
             while (r[i + u] == " "):
                 u -= 1
             if (r[i + u] == "(" or r[i + u] == "+" or r[i + u] == "^" or r[i + u] == "|"):
-                print "Parentheses error"
+                print "Parentheses error."
                 sys.exit()
         if (check < 0):
-            print "Parentheses error"
+            print "Parentheses error."
             sys.exit()
         i += 1
     if (check != 0):
-        print "Parentheses error"
+        print "Parentheses error."
         sys.exit()
 
 
 
 def checkfile(rules, facts, queries):
     if (facts[0] != '=' or queries[0] != '?' or (len(facts) > 1 and (facts[1:].isalpha() != True or facts[1:].isupper() != True)) or queries[1:].isalpha() != True or queries[1:].isupper() != True or len(queries) <= 1):
-        print "error queries or fact"
+        print "Error in queries or in the facts."
         sys.exit()
     for r in rules:
         while (r.find("  ") != -1):
@@ -50,54 +50,54 @@ def checkfile(rules, facts, queries):
         while (i < len(tab) and tab[i] != "=>"):
             if (i < len(tab) and tab[i][0] == '!'):
                 if (len(tab[i]) != 2 or tab[i][1].isalpha() == False or tab[i][1].isupper() == False):
-                    print "error maj or letter hey"
+                    print "Error in letter (only maj letter allowed) or 2 letters that follows."
                     sys.exit() 
             elif (i < len(tab) and len(tab[i]) != 1 or tab[i].isalpha() == False or tab[i].isupper() == False):
-                print "error maj or letter hoy"
+                print "Error in letter (only maj letter allowed) or 2 letters that follows."
                 sys.exit()
             i += 1
             if (i < len(tab) and tab[i] == "=>"):
                 break
             elif (i < len(tab) and tab[i] != "+" and tab[i] != "|" and tab[i] != "^"):
-                print "error symbol"
+                print "Unknown symbol found."
                 sys.exit()
             i += 1
             if (i < len(tab) and tab[i] == "=>"):
-                print "error missing value"
+                print "Missing value."
                 sys.exit()
         if i >= len(tab):
-            print "error missing value"
+            print "Missing value."
             sys.exit()
         elif (tab[i] == "=>"):
             i += 1
             if (i < len(tab)):
                 if (tab[i][0] == '!'):
                     if (len(tab[i]) != 2 or tab[i][1].isalpha() == False or tab[i][1].isupper() == False):
-                        print "error maj or letter after '=>'"
+                        print "Error in letter (only maj letter allowed) or 2 letters that follows after '=>'"
                         sys.exit()
                 elif (len(tab[i]) != 1 or tab[i].isalpha() == False or tab[i].isupper() == False):
-                    print "error maj or letter after '=>'"
+                    print "Error in letter (only maj letter allowed) or 2 letters that follows after '=>'"
                     sys.exit()
                 i += 1
             else:
-                print "error missing value"
+                print "Missing value"
                 sys.exit()
             if (i < len(tab)):
                 if (tab[i] != "+" or i + 1 >= len(tab)):
-                    print "error symbol after '=>'"
+                    print "Unknown or not allowed symbol after '=>'"
                     sys.exit()
                 i += 1
                 if (i < len(tab)):
                     if (tab[i][0] == '!'):
                         if (tab[i][1].isalpha() == False or tab[i][1].isupper() == False):
-                            print "error maj or letter after '=>'"
+                            print "Error in letter (only maj letter allowed) or 2 letters that follows after '=>'"
                             sys.exit()
                     elif (tab[i].isalpha() == False or tab[i].isupper() == False):
-                        print "error maj or letter after '=>'"
+                        print "Error in letter (only maj letter allowed) or 2 letters that follows after '=>'"
                         sys.exit()
                     i += 1
                     if (i < len(tab)):
-                        print "error missing value"
+                        print "Missing value"
                         sys.exit()
 
 def makegraph(rules):
@@ -137,7 +137,7 @@ def makegraph(rules):
             str1 = g.split("=>")[0]
             for s in str1:
                 if (a == s):
-                    print "error value implies the same value"
+                    print "Error: Value implies itself"
                     sys.exit()
     return graph
 
@@ -151,7 +151,7 @@ def do_algo(querie, graph, ans, pastletter):
             if t.isalpha() == True and ans[t][1] == False:
                 for p in pastletter:
                     if p == querie:
-                        print "error infinite loop"
+                        print "Infinite loop detected"
                         sys.exit()
                 pastletter.append(querie)
                 ans = do_algo(t, graph, ans, pastletter)
@@ -198,10 +198,10 @@ def start_algo(graph, facts, queries):
 if __name__ == "__main__":
     i = 0
     if len(sys.argv) != 2:
-        print "error parameters"
+        print "Only one argument required."
         sys.exit()
     if os.path.isfile(sys.argv[1]) == False:
-        print "Error open"
+        print "Cannot open file in parameter."
         sys.exit()
 
     content = []
@@ -210,7 +210,7 @@ if __name__ == "__main__":
             content.append(line)
             i += 1
     if i <= 1:
-        print "Error"
+        print "Empty file."
         sys.exit()
     rules = []
     for s in content:
